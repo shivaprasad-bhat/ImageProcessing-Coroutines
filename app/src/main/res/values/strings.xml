@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ImageProcessing-Coroutines</string>
+    <string name="content_description_text">Image view to show downloaded image</string>
 </resources>
