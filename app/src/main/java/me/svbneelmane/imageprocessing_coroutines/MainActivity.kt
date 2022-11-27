@@ -2,9 +2,9 @@ package me.svbneelmane.imageprocessing_coroutines
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
 import me.svbneelmane.imageprocessing_coroutines.databinding.ActivityMainBinding
 import java.net.URL
@@ -24,12 +24,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         coroutineScope.launch {
-            val originalDeferred = coroutineScope.async(Dispatchers.IO) {
+            val original = coroutineScope.async(Dispatchers.IO) {
 //                delay(2000L) - to see loading if downloads fast
                 getOriginalBitmap()
-            }
-            val bitmap = originalDeferred.await()
-            loadImage(bitmap)
+            }.await()
+
+            val filtered =
+                withContext(coroutineScope.coroutineContext + Dispatchers.Default) {
+                    applyFilter(original)
+                }
+
+            loadImage(filtered)
         }
     }
 
@@ -45,4 +50,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun applyFilter(bitmap: Bitmap) = Filter.apply(bitmap)
 }
